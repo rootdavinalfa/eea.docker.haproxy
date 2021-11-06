@@ -37,6 +37,7 @@ RISE = os.environ.get('RISE', '2')
 FALL = os.environ.get('FALL', '3')
 USE_HTTPS = (os.environ.get('USE_HTTPS', 'false').lower() == "true")
 CERT_FILE = os.environ.get('CERT_FILE', '/etc/haproxy/certs/cert.pem')
+REDIRECT_TO_HTTPS = (os.environ.get('REDIRECT_TO_HTTPS', 'false').lower() == "true")
 
 
 listen_conf = Template("""
@@ -52,6 +53,7 @@ frontend_conf = Template("""
   frontend $name
     bind *:$port $accept_proxy
     mode $mode
+    $http_redirect
     default_backend $backend
 """)
 
@@ -127,6 +129,9 @@ if BACKENDS_MODE == 'http':
         httpchk=HTTPCHK,
         httpchk_host=HTTPCHK_HOST
     )
+
+#if REDIRECT_TO_HTTPS:
+#    frontend_conf += 'http-request redirect scheme https code 301 unless { ssl_fc }'
 
 ################################################################################
 # Backends are resolved using internal or external DNS service
@@ -259,7 +264,8 @@ with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
             port=FRONTEND_PORT,
             mode=FRONTEND_MODE,
             backend=BACKEND_NAME,
-            accept_proxy=accept_proxy
+            accept_proxy=accept_proxy,
+            http_redirect='http-request redirect scheme https code 301 unless { ssl_fc }'if REDIRECT_TO_HTTPS else ''
         )
     )
 

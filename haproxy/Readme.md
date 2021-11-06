@@ -158,6 +158,8 @@ either when running the container or in a `docker-compose.yml` file.
   * `FALL` number of consecutive invalid health checks before considering the server as DOWN. Default value is `3`
   * `USE_HTTPS` Use HTTPS binding when using haproxy. Default value is `false`
   * `CERT_FILE` Cert file location in format of *.pem . Default value is `/etc/haproxy/certs/cert.pem`
+  * `REDIRECT_TO_HTTPS` Redirect HTTP request to HTTPS. Default value is `false`
+  
 
 ## Logging
 
