@@ -35,6 +35,8 @@ FAST_INTER = os.environ.get('FAST_INTER', INTER)
 DOWN_INTER = os.environ.get('DOWN_INTER', INTER)
 RISE = os.environ.get('RISE', '2')
 FALL = os.environ.get('FALL', '3')
+USE_HTTPS = (os.environ.get('USE_HTTPS', 'false').lower() == "true")
+CERT_FILE = os.environ.get('CERT_FILE', '/etc/haproxy/certs/cert.pem')
 
 
 listen_conf = Template("""
@@ -52,6 +54,24 @@ frontend_conf = Template("""
     mode $mode
     default_backend $backend
 """)
+
+
+frontend_https_conf = Template("""
+  frontend https-$name
+    bind *:443 ssl crt $cert_file no-tls-tickets ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-RSA-RC4-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES128-SHA:AES256-SHA256:AES256-SHA:RC4-SHA
+    mode tcp
+    acl secure dst_port eq 443
+    reqadd X-Forwarded-Proto:\ https
+
+    # Mark all cookies as secure if sent over SSL
+    rsprep ^Set-Cookie:\ (.*) Set-Cookie:\ \1;\ Secure if secure
+ 
+    # Add the HSTS header with a 1 year max-age
+    rspadd Strict-Transport-Security:\ max-age=31536000 if secure
+
+    default_backend $backend
+""")
+
 
 if COOKIES_ENABLED:
     #if we choose to enable session stickiness
@@ -249,5 +269,13 @@ with open("/usr/local/etc/haproxy/haproxy.cfg", "w") as configuration:
         )
     )
 
+    if USE_HTTPS:
+        configuration.write(
+        frontend_https_conf.substitute(
+            name=FRONTEND_NAME,
+            backend=BACKEND_NAME,
+            cert_file=CERT_FILE,
+          )
+        )
     configuration.write(backend_conf)
     configuration.write(health_conf)

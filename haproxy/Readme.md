@@ -156,7 +156,8 @@ either when running the container or in a `docker-compose.yml` file.
   * `DOWN_INTER` parameter sets the interval between two consecutive health checks when the server is in the DOWN state. If not set, then `INTER` is used.
   * `RISE` number of consecutive valid health checks before considering the server as UP. Default value is `2`
   * `FALL` number of consecutive invalid health checks before considering the server as DOWN. Default value is `3`
-
+  * `USE_HTTPS` Use HTTPS binding when using haproxy. Default value is `false`
+  * `CERT_FILE` Cert file location in format of *.pem . Default value is `/etc/haproxy/certs/cert.pem`
 
 ## Logging
 

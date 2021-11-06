@@ -57,6 +57,7 @@ if ! test -e /usr/local/etc/haproxy/haproxy.cfg; then
     if [ -n "$TIMEOUT_CLIENT" ]; then echo "export TIMEOUT_CLIENT=\"$TIMEOUT_CLIENT\""  >> /etc/environment; fi
     if [ -n "$TIMEOUT_CONNECT" ]; then echo "export TIMEOUT_CONNECT=\"$TIMEOUT_CONNECT\""  >> /etc/environment; fi
     if [ -n "$TIMEOUT_SERVER" ]; then echo "export TIMEOUT_SERVER=\"$TIMEOUT_SERVER\""  >> /etc/environment; fi
+    if [ -n "$USE_HTTPS" ]; then echo "export USE_HTTPS=\"$USE_HTTPS\""  >> /etc/environment; fi
 fi
 
 
