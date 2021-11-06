@@ -31,8 +31,8 @@ See [older versions](https://github.com/eea/eea.docker.haproxy/releases)
 
 ### Source code
 
-  - [github.com](http://github.com/eea/eea.docker.haproxy)
-
+  - [Based On](http://github.com/eea/eea.docker.haproxy)
+  - [With HTTPS support](http://github.com/rootdavinalfa/eea.docker.haproxy)
 
 ### Installation
 
