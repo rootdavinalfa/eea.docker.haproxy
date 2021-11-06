@@ -59,15 +59,9 @@ frontend_conf = Template("""
 frontend_https_conf = Template("""
   frontend https-$name
     bind *:443 ssl crt $cert_file no-tls-tickets ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-RSA-RC4-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES128-SHA:AES256-SHA256:AES256-SHA:RC4-SHA
-    mode tcp
+    mode http
     acl secure dst_port eq 443
     reqadd X-Forwarded-Proto:\ https
-
-    # Mark all cookies as secure if sent over SSL
-    rsprep ^Set-Cookie:\ (.*) Set-Cookie:\ \1;\ Secure if secure
- 
-    # Add the HSTS header with a 1 year max-age
-    rspadd Strict-Transport-Security:\ max-age=31536000 if secure
 
     default_backend $backend
 """)
